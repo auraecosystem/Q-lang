@@ -1,6 +1,6 @@
 Q LANGUAGE STACK
 
-1. Syntax Layer (.q)
+1. Syntax Layer {(.q)}
 2. Parser Layer
 3. Semantic Engine
 4. AI Reasoning Layer
@@ -20,3 +20,12 @@ BUT:
 - plugin ecosystem
 - execution runtime
 - blockchain-aware coordination layer
+
+Q Engine
+ ├── Detector
+ ├── Analyzer
+ ├── Executor
+ ├── Memory Layer
+ ├── Learning Layer
+ ├── Plugin System
+ └── AI Reasoner
