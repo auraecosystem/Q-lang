@@ -1,0 +1,27 @@
+Project:
+  Scan current repository
+
+Actions:
+  Detect all objects
+  Analyze all objects
+  Learn unknown objects
+
+AI:
+  Explain source code
+
+Agent:
+  Lola
+    Memory: Enabled
+    Chat: Enabled
+    Learning: Enabled
+    Summarization: Enabled
+    Runtime: Automatic
+
+Blockchain:
+  Validator Network
+  Consensus Layer
+  Ledger Layer
+  Transaction Layer
+
+Consensus:
+  Proof of Presence
