@@ -22,3 +22,16 @@ Execution: Available
 
 execute *
 ```
+```pq
+Everything is a Definition.
+Everything is Discoverable.
+Everything is Learnable.
+Everything is Executable.
+Understand
+Define
+Discover
+Analyze
+Learn
+Coordinate
+Execute
+```
