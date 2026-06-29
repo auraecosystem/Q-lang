@@ -31,3 +31,7 @@ Object successfully integrated into the semantic ecosystem.
 q-shell> /sync agent-alpha-8004
 Initiating trustless cryptographic state relay for agent-alpha-8004...
 State anchored successfully. Transaction hash: 0x52aad9fa3764416bbec5...
+conda create -n aieng311 python=3.11 -y
+conda activate aieng311
+pip install build123d
+cd aieng-ui/backend && pip install -e .
