@@ -1,0 +1,17 @@
+program     ::= statement*
+statement   ::= letStmt
+              | fnStmt
+              | ifStmt
+              | whileStmt
+              | exprStmt
+
+expression  ::= assignment
+
+assignment  ::= IDENT "=" expression
+
+call        ::= primary ("(" arguments? ")")*
+
+primary     ::= IDENT
+              | NUMBER
+              | STRING
+              | "(" expression ")"
