@@ -20,3 +20,14 @@ echo "=== [3/3] Testing Unknown Object Lifecycle & Loop ==="
 python3 ./Learning_loop/test_learning.py ./prototype/.anancondq
 
 echo ">>> All Semantic Integrity Tests Passed Successfully <<<"
+# Start the customized command line environment
+./Q_cli/run_shell --interactive
+
+# Execution output inside the shell:
+q-shell> /lifecycle ./prototype/.anancondq
+Intercepting object: ./prototype/.anancondq
+Object successfully integrated into the semantic ecosystem.
+
+q-shell> /sync agent-alpha-8004
+Initiating trustless cryptographic state relay for agent-alpha-8004...
+State anchored successfully. Transaction hash: 0x52aad9fa3764416bbec5...
