@@ -106,3 +106,46 @@ This project is open-source and maintained under the [Aura Ecosystem](https://gi
 
 
 
+cd Q-lang
+gem install bundler && bundle install
+pip install -r requirements.txt
+```
+
+### 2. Verification
+```bash
+./Q_cli/bin/q-lang check example/Program.pq
+```
+
+---
+
+## 🔄 Universal Form & MCP Integration
+
+Objects are managed via the **Universal Form** (`understand * define * analyze * learn * coordinate * run`).
+
+The `Agent/` directory uses the **Model Context Protocol (MCP)** to map external tools/data for AI agents.
+
+```q
+// Define and coordinate a secure agent
+define Agent::"SecurityGuard" { model: "Claude-3.5-Sonnet", protocol: "McpRegistry" }
+coordinate Agent::"SecurityGuard" { target: SystemScanner }
+run SecurityGuard
+```
+
+---
+
+## 🧬 Unknown Object Lifecycle
+When encountering unknown objects, the system automatically runs a discovery cycle: `detect` -> `analyze` -> `infer` -> `classify` -> `register` -> `learn`.
+
+---
+
+## 💻 Technical Stack
+*   **Ruby (56.7%)**: Core Engine & CLI.
+*   **Python (18.2%)**: Learning loop & Agents.
+*   **Shell (10.2%)**: Bootstrapping.
+*   **Q/PQ (14.9%)**: Syntax.
+
+---
+
+## 📄 License
+Maintained under [Aura Ecosystem](https://github.com) guidelines.
+
