@@ -1,0 +1,12 @@
+pub mod cli;
+pub mod lexer;
+pub mod parser;
+pub mod ast;
+pub mod semantic;
+pub mod qir;
+pub mod optimizer;
+pub mod backend;
+pub mod runtime;
+pub mod vm;
+pub mod diagnostics;
+pub mod stdlib;
