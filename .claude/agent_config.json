@@ -1,0 +1,22 @@
+{
+  "project": {
+    "name": "Q-lang AI Engineering Node",
+    "version": "1.0.0",
+    "primary_language": "python",
+    "subsystems": ["Agent", "Core", "Parser"]
+  },
+  "runtime_rules": {
+    "execution_command": "python3 Agent/agent.py",
+    "strict_typing": true,
+    "allow_unmapped_objects": true,
+    "fallback_lifecycle": "UnknownObjectLifecycle"
+  },
+  "mcp_integration": {
+    "enabled": true,
+    "registry_sync_path": "env.MCP_REGISTRY_PATH",
+    "allowed_protocols": ["McpRegistry", "EVM", "FileStream"]
+  },
+  "system_prompts": {
+    "base_instruction": "You are a Q-lang Semantic Computing Assistant. Your task is to ingest, map, and translate software interfaces, databases, and structural protocols into Universal Form expressions (understand * define * analyze * learn * coordinate * run)."
+  }
+}
