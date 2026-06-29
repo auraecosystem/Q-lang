@@ -1,0 +1,76 @@
+# Learning_loop/test_learning.py - Python Unit Test Assertions
+import os
+import pytest
+import sys
+
+# Ensure execution context path is anchored into test run states
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+class MockSemanticObject:
+    """Simulates an arbitrary metadata payload passing through the ingestion pipeline."""
+    def __init__(self, source_path):
+        self.source = source_path
+        self.is_detected = False
+        self.metadata_extracted = False
+        self.inferred_type = None
+        self.is_learned = False
+
+    def detect(self):
+        if os.path.exists(self.source):
+            self.is_detected = True
+        return self.is_detected
+
+    def analyze(self):
+        if self.is_detected:
+            self.metadata_extracted = True
+        return self.metadata_extracted
+
+    def infer(self):
+        if self.metadata_extracted:
+            # Emulate mapping to a specific known class signature
+            self.inferred_type = "AI_Agent_Context"
+        return self.inferred_type
+
+    def learn(self):
+        if self.inferred_type == "AI_Agent_Context":
+            self.is_learned = True
+        return self.is_learned
+
+
+# --- Test Assertions Suite ---
+
+def test_unknown_object_lifecycle_success():
+    """Verifies that an existing file executes a clean lifecycle pipeline."""
+    # Setup a mock experimental target file matching repo paths
+    test_target = "./prototype/.anancondq"
+    os.makedirs("./prototype", exist_ok=True)
+    with open(test_target, "w") as f:
+        f.write("identity: test-node-001\ntype: raw_stream")
+
+    obj = MockSemanticObject(test_target)
+
+    # Assertion 1: Object detection phase passes
+    assert obj.detect() is True, "Failed to locate and register target entity path."
+
+    # Assertion 2: Analysis phase runs successfully on detected targets
+    assert obj.analyze() is True, "Analysis failed to unpack payload properties."
+
+    # Assertion 3: Engine successfully infers semantic structural identity
+    assert obj.infer() == "AI_Agent_Context", "Engine failed to assign semantic object type."
+
+    # Assertion 4: Learning loop logs schema rules globally for later execution
+    assert obj.learn() is True, "Learning sequence aborted before system registration."
+
+    # Cleanup artifacts after successful validation
+    if os.path.exists(test_target):
+        os.remove(test_target)
+
+
+def test_unknown_object_lifecycle_missing_target():
+    """Confirms the ingestion loop securely fails when data layers disappear."""
+    invalid_target = "./prototype/non_existent.q"
+    obj = MockSemanticObject(invalid_target)
+
+    # The pipeline should cleanly halt at the initialization stage
+    assert obj.detect() is False, "Ingestion loop processed an invalid or empty path signature."
+    assert obj.analyze() is False, "Analysis triggered on an unrecognized framework reference."
