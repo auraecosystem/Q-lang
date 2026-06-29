@@ -1,0 +1,39 @@
+name: Q-lang Semantic CI
+
+# Trigger workflow on pushes and pull requests targeting the main branch
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-ecosystem:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository source files
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Step 2: Provision Ruby for Core parsing engines
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      # Step 3: Provision Python for the Learning Inference framework
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      # Step 4: Validate environment script permissions
+      - name: Make Verification Script Executable
+        run: chmod +x ./bash.sh
+
+      # Step 5: Execute test suite automation
+      - name: Run Core Verification Suite
+        run: ./bash.sh
