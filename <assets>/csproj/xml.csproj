@@ -1,0 +1,9 @@
+<MauiAsset Include="..\Runtimex86\**" 
+           LogicalName="Runtime\%(RecursiveDir)%(Filename)%(Extension)" 
+           Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' And ('$(PlatformTarget)' == 'x86')" />
+<MauiAsset Include="..\Runtimex64\**" 
+           LogicalName="Runtime\%(RecursiveDir)%(Filename)%(Extension)" 
+           Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' And ('$(PlatformTarget)' == 'x64')" />
+<MauiAsset Include="..\RuntimeARM64\**" 
+           LogicalName="Runtime\%(RecursiveDir)%(Filename)%(Extension)" 
+           Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' And ('$(PlatformTarget)' == 'ARM64')" />
