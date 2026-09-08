@@ -9,13 +9,13 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     container:
       image: crystallang/crystal
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Install dependencies
       run: shards install
     - name: Run tests
