@@ -10,7 +10,7 @@ optimized: curiousity mindset nd for a curious, highly capable student or resear
 
 # Q-lang (Universal Semantic Language)
 
-Q is a semantic computing language designed to understand, define, analyze, learn, coordinate, and execute any digital or conceptual object. Unlike traditional programming languages that focus exclusively on compiling logical operations into specific machine code instructions, Q focuses entirely on mapping and orchestrating
+Q-lang is a semantic computing language designed to understand, define, analyze, learn, coordinate, and execute any digital or conceptual object. Unlike traditional programming languages that focus exclusively on compiling logical operations into specific machine code instructions, Q focuses entirely on mapping and orchestrating
 **meaning**.
 In the Q ecosystem, **everything is treated as an Object**—whether it is a raw file, a legacy script, an AI model, a communication protocol, a decentralized blockchain ledger, or a human-defined conceptual framework.
 
