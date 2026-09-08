@@ -1,8 +1,8 @@
 ---
- ^↑D: Q-lang detect -> analyze -> infer -> classify -> register -> learn.
-.. docs: Deep Semantic Knowledge 
- Directive: analyze the supplied subject deeply
- identify: its essential concepts and relationships
+^↑D: detect -> analyze -> infer -> classify -> register -> learn.
+docs: Deep Semantic Knowledge 
+Directive: analyze the supplied subject deeply
+identify: its essential concepts and relationships
 synthesize: All the repo knowledge into a clear summary
 rigorous: summarize
 optimized: curiousity mindset nd for a curious, highly capable student or researcher
