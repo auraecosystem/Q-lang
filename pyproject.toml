@@ -12,5 +12,5 @@ requires-python = ">=3.10"
 q = "q_cli:main"
 
 [tool.setuptools]
-packages = ["Parser", "Core", "Runtime"]
+packages = ["Parser", "Core", "Runtime", "Protocol", "Agent"]
 py-modules = ["q_cli"]
