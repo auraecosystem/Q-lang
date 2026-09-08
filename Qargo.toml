@@ -1,9 +1,9 @@
 [package]
 name = "q-lang"
-version = "0.1.0"
+version = "1.0"
 edition = "2024"
-authors = ["Seriki Yakub"]
-license = "Apache-2.0"
+authors = ["Seriki walter Yakub"]
+license = 
 description = "Q Programming Language"
 repository = "https://github.com/auraecosystem/Q-lang"
 homepage = "https://github.com/auraecosystem/Q-lang"
