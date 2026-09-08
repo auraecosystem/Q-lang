@@ -8,22 +8,25 @@ except ImportError:
 
 
 class QAgentBridge:
-    """Expose a stable semantic interface for QRuntime.
+    """Delegate protocol instructions to the Q-lang agent layer."""
 
-    The bridge deliberately delegates to the existing agent layer. It does not
-    invent MCP calls or execute arbitrary external tools by itself.
-    """
-
-    def __init__(self, agent=None):
-        self.agent = agent or (QLangAgentEngine() if QLangAgentEngine else None)
+    def __init__(self, agent=None, agent_name: str = "q-lang"):
+        if agent is not None:
+            self.agent = agent
+        elif QLangAgentEngine is not None:
+            self.agent = QLangAgentEngine(agent_name=agent_name)
+        else:
+            self.agent = None
 
     def coordinate(self, action: str, context: Any = None):
         if self.agent is None:
-            return {"status": "unavailable", "action": action}
-        return self.agent.coordinate(action, context or {})
+            return {"status": "unavailable", "action_executed": action}
+        return self.agent.coordinate(action, dict(context or {}))
 
     def instruct(self, action: str, context: Any = None):
         return self.coordinate(action, context)
 
     def verify(self, result: Any):
-        return {"verified": True, "result": result}
+        if isinstance(result, dict):
+            return {"verified": result.get("status") in {"success", "accepted", "completed", "ok"}, "result": result}
+        return {"verified": False, "result": result}
