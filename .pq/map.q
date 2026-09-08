@@ -1,3 +1,3 @@
 detect "./project"
 analyze "./project"
-run "./main.py"
+run "./main.rs"
