@@ -1,0 +1,16 @@
+name: q-lang
+version: 0.1.0
+
+authors:
+  - Seriki Yakub
+
+targets:
+  q:
+    main: src/q.cr
+
+dependencies:
+  # dependencies go here
+
+crystal: ">= 1.10.0"
+
+license: MIT
