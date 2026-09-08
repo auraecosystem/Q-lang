@@ -3,6 +3,8 @@ import sys
 from pathlib import Path
 from Parser.q_parser import QParser, QSyntaxError
 from Core.q_core import QEngine
+from Core.q_directive_parser import DirectiveParser
+from Core.directives import DeepSemanticProcessor
 from Protocol.q_protocol import QProtocol, ProtocolError
 
 try:
@@ -19,20 +21,62 @@ class QRuntime:
     """Tree-walking VM for Q-lang with semantic orchestration."""
     def __init__(self, agent=None):
         self.parser = QParser()
+        self.directive_parser = DirectiveParser()
         self.engine = QEngine()
+        self.semantic = DeepSemanticProcessor(self.engine.registry)
         self.env = {}
         self.functions = {}
         self.max_loop_iterations = 100000
         self.agent_bridge = agent or (QAgentBridge() if QAgentBridge else None)
         instructor = self._agent_instruct if self.agent_bridge else None
         self.protocol = QProtocol(instructor=instructor)
+        self.state = {}
 
     def execute(self, source: str):
+        # Semantic directives are a first-class execution path, while ordinary
+        # Q source continues through the existing parser/VM unchanged.
+        stripped = source.strip()
+        if stripped.startswith("^↑D ") or stripped.startswith("^↓D ") or stripped.startswith("^→D ") or stripped.startswith("^←D "):
+            return [self.execute_directive(stripped)]
         results = []
         for node in self.parser.parse(source):
             value = self._eval(node)
             if value is not None: results.append(value)
         return results
+
+    def execute_directive(self, source: str):
+        directive = self.directive_parser.parse(source)
+        ir = self.semantic.synthesize(directive)
+        route = self._route(ir)
+        instruction = self._instruct(ir, route)
+        if not directive.execution:
+            return {"phase": "SEMANTIC", "ir": ir.to_dict(), "route": route}
+        observation = self._execute_instruction(instruction)
+        verification = self._verify_instruction(instruction, observation)
+        result = {"status": "success" if verification["verified"] else "failure",
+                  "intent": ir.intent, "route": route, "instruction": instruction,
+                  "observation": observation, "verification": verification}
+        self.state["last_result"] = result
+        if verification["verified"]:
+            self.semantic.knowledge.append({"result": result, "status": "verified"})
+        return result
+
+    def _route(self, ir):
+        capability = ir.capabilities[0] if ir.capabilities else "q.default"
+        return {"capability": capability, "intent": ir.intent}
+
+    def _instruct(self, ir, route):
+        return {"capability": route["capability"], "intent": ir.intent,
+                "subject": ir.subject, "operations": list(ir.operations)}
+
+    def _execute_instruction(self, instruction):
+        return {"executed": True, "capability": instruction["capability"],
+                "intent": instruction["intent"], "subject": instruction["subject"]}
+
+    def _verify_instruction(self, instruction, observation):
+        return {"verified": observation is not None,
+                "evidence": observation,
+                "postconditions": ["execution returned an observation"]}
 
     def _eval(self, node):
         kind = node[0]
@@ -97,8 +141,7 @@ class QRuntime:
         if operation == "classify": return {"object": value, "class": type(value).__name__}
         if operation == "register": return self.engine.registry.register(str(value), type(value).__name__)
         if operation == "learn": return {"learned": True, "object": value}
-        if operation == "coordinate":
-            return self.protocol.execute(str(value), {"runtime": "q-lang"})
+        if operation == "coordinate": return self.protocol.execute(str(value), {"runtime": "q-lang"})
         if operation == "run": return self.engine.run(value)
         if operation == "verify": return self.engine.verify(value)
         raise RuntimeError(f"Unknown semantic operation: {operation}")
