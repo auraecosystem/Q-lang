@@ -1,0 +1,2 @@
+pip install -e .
+q examples/hello.q
