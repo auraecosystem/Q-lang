@@ -4,6 +4,7 @@ from typing import Any, Callable, Dict, Optional
 from Core.directives import DeepSemanticProcessor
 from Core.q_core import ObjectRegistry
 from Core.q_directive_parser import DirectiveParser
+from Core.semantic_protocol import create_execution
 
 
 class SemanticRuntime:
@@ -31,10 +32,11 @@ class SemanticRuntime:
         return {"verified": ok, "evidence": observation,
                 "postconditions": ["execution returned an observation"]}
 
-    def result(self, ir, route, instruction, observation, verification) -> Dict[str, Any]:
+    def result(self, ir, route, instruction, observation, verification, validation=None) -> Dict[str, Any]:
         return {"status": "success" if verification["verified"] else "failure",
                 "intent": ir.intent, "route": route, "instruction": instruction,
-                "observation": observation, "verification": verification}
+                "validation": validation, "observation": observation,
+                "verification": verification}
 
     def learn(self, result: Dict[str, Any]) -> None:
         # Only verified results become trusted knowledge.
@@ -48,9 +50,27 @@ class SemanticRuntime:
         instruction = self.instruct(ir, route)
         if not directive.execution:
             return {"phase": "SEMANTIC", "ir": ir.to_dict(), "route": route}
-        observation = self.execute(instruction)
-        verification = self.verify(instruction, observation)
-        result = self.result(ir, route, instruction, observation, verification)
+
+        execution = create_execution(ir, route)
+        if not execution.validation.valid:
+            rejected = {
+                "status": "rejected",
+                "phase": execution.validation.phase,
+                "validation": {
+                    "valid": execution.validation.valid,
+                    "errors": execution.validation.errors,
+                    "checks": execution.validation.checks,
+                },
+                "route": route,
+                "instruction": instruction,
+            }
+            self.state["last_result"] = rejected
+            return rejected
+
+        observation = self.execute(execution.instruction)
+        verification = self.verify(execution.instruction, observation)
+        result = self.result(ir, route, execution.instruction, observation, verification,
+                             validation=execution.validation.__dict__)
         self.state["last_result"] = result
         self.learn(result)
         return result
