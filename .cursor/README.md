@@ -1,5 +1,7 @@
-
-
+---
+^D    = define / express
+^|D   = execute
+---
 # Q-lang (Universal Semantic Language)
 Q is a semantic computing language designed to understand, define, analyze, learn, coordinate, and execute any digital or conceptual object. Unlike traditional programming languages that focus exclusively on compiling logical operations into machine instructions, Q maps and orchestrates **meaning**.
 
