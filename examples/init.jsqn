@@ -1,0 +1,4 @@
+// Define and coordinate a secure agent
+define Agent::"SecurityGuard" { model: "Claude-3.5-Sonnet", protocol: "McpRegistry" }
+coordinate Agent::"SecurityGuard" { target: SystemScanner }
+run SecurityGuard
