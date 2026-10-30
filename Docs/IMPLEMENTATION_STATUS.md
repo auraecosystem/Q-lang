@@ -14,23 +14,27 @@ The current executable baseline is the Python tree-walking runtime:
 
 The supported Python baseline is 3.10+. CI uses Python 3.11.
 
-## Verified from source inspection
+## Implemented and tested
 
 - Arithmetic, variables, functions, conditionals, loops, and semantic verbs have runtime tests.
 - Directive parsing recognizes the four directional operator forms.
 - The protocol tests cover the successful pipeline and rejection of a failed instructor response.
-- The current directive execution path in `Runtime/q_runtime.py` creates a simulated observation and verifies that the observation is non-null.
-- The runtime's directive path currently performs its own route/instruct/execute/verify sequence rather than delegating through `QProtocol`.
+- The protocol records ROUTE, INSTRUCT, VERIFY, and RESULT events without duplicate status arguments.
+- Directive execution is **dry-run by default**. Without an explicitly supplied executor, Q-lang returns `status: simulated` and `executed: false`.
+- An injected executor must return a dictionary with `verified: true` and non-empty `evidence` before the runtime marks the result verified and adds it to the verified knowledge collection.
+- CLI tests cover result output and runtime-error reporting.
 
-## Not production-ready
+## Security boundaries and remaining work
 
-- Simulated execution is not external execution.
-- A non-null observation is not sufficient evidence of a real postcondition.
+- Dry-run mode does not perform external actions.
+- Adapter-provided verification/evidence is a contract boundary, not independent proof. Production use still requires independent postcondition checks and evidence validation.
 - The semantic inference path is heuristic, not a trained or calibrated inference engine.
 - Agent/MCP integration is not yet a secure general-purpose tool executor.
 - Persistent trusted learning, policy enforcement, sandboxing, rollback, and audit-grade evidence are incomplete.
 - `Engine/` and `Runtime/` contain overlapping runtime concepts that need consolidation.
 - Rust and other language artifacts are experimental and do not yet pass a shared language conformance suite.
+
+Do not connect this runtime to production systems or grant it sensitive credentials until authorization, sandboxing, audit logging, and independent verification have been implemented and reviewed.
 
 ## CI contract
 
@@ -40,4 +44,4 @@ The supported CI job compiles the active Python modules and runs:
 python -m unittest discover -s Tests -p "test_*.py" -v
 ```
 
-Crystal checks are kept as a manually triggered experiment because the repository does not currently define a root `shard.yml` manifest or a Crystal spec suite.
+Crystal checks are kept as a manually triggered experiment because the repository does not currently define a root `shard.yml` manifest or a Crystal spec suite. Historical Conda, Makefile, and dependency-review workflows are manual-only until their repository prerequisites are configured.
