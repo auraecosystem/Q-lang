@@ -1,22 +1,30 @@
-name: Crystal CI
+name: Experimental Crystal Checks
 
+# The active Q-lang runtime and test suite are Python-based. Keep this
+# workflow available for future Crystal experiments without requiring a
+# self-hosted runner or blocking normal pull requests.
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
-  build:
-
-    runs-on: self-hosted
-
+  crystal-experiment:
+    runs-on: ubuntu-latest
     container:
-      image: crystallang/crystal
-
+      image: crystallang/crystal:latest
     steps:
-    - uses: actions/checkout@v6
-    - name: Install dependencies
-      run: shards install
-    - name: Run tests
-      run: crystal spec
+      - uses: actions/checkout@v4
+      - name: Check for a Crystal shard manifest
+        id: manifest
+        run: |
+          if [ -f shard.yml ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "No shard.yml found; Crystal dependency/spec checks are not configured yet."
+          fi
+      - name: Install Crystal dependencies
+        if: steps.manifest.outputs.present == 'true'
+        run: shards install
+      - name: Run Crystal specs
+        if: steps.manifest.outputs.present == 'true'
+        run: crystal spec
