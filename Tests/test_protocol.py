@@ -18,6 +18,7 @@ class TestQProtocol(unittest.TestCase):
         self.assertEqual(calls, [("build Web4 agent", "INSTRUCT")])
         self.assertEqual(result["status"], "completed")
         self.assertTrue(result["verification"]["verified"])
+        self.assertEqual(protocol.events[-1].status, "completed")
 
     def test_verify_rejects_failure(self):
         protocol = QProtocol(lambda action, context: {"status": "failed"})
