@@ -94,11 +94,12 @@ The same checks are run by `bash.sh` and the Python GitHub Actions workflow.
 
 ## Runtime safety and current limitations
 
-- Semantic directive execution currently returns a simulated observation. It does not establish that an external action was performed.
-- Current verification is minimal and must not be used as a security guarantee or as proof of external postconditions.
+- Semantic directive execution is dry-run by default: it returns `status: simulated` and `executed: false`. No external action is performed without an explicitly injected executor.
+- Programmatic callers may construct `QRuntime(executor=my_executor)`. The executor must return a dictionary containing `verified: true` and non-empty `evidence` before the runtime records a verified result. This is an adapter contract, not independent proof; production use still needs independent postcondition checks.
+- Agent adapters are also explicit dependencies. Ordinary local execution does not initialize an agent client or require API credentials.
 - The semantic inference implementation is heuristic and should not be treated as a calibrated model or confidence score.
 - Agent/MCP-related code is experimental; the repository does not yet provide a production-ready, permissioned MCP tool execution environment.
-- Persistent learning, rollback, authorization policy, capability isolation, and evidence-backed postcondition checks require further implementation.
+- Persistent learning, rollback, authorization policy, capability isolation, and independently verified postconditions require further implementation.
 - The Python runtime, the additional Engine runtime, and experimental Rust/other-language artifacts have not yet been consolidated into one compiler/runtime contract.
 
 Do not connect this runtime to production systems or grant it sensitive credentials until authorization, sandboxing, audit logging, and independent verification have been implemented and reviewed.
