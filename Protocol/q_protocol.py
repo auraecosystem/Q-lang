@@ -79,7 +79,8 @@ class QProtocol:
             "verification": verification,
             "timestamp": time.time(),
         }
-        self._emit("RESULT", result["status"], **result)
+        event_payload = {key: value for key, value in result.items() if key != "status"}
+        self._emit("RESULT", result["status"], **event_payload)
         return result
 
     def execute(self, action: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
