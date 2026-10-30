@@ -1,153 +1,129 @@
+# Q-lang — Universal Semantic Language
 
+Q-lang is an experimental semantic language and runtime for expressing meaning-oriented operations over data, code, services, and conceptual objects. Its goal is to connect semantic interpretation with explicit, verifiable execution rather than treating every input as an ordinary expression.
 
-# Q-lang (Universal Semantic Language)
+> **Project status:** early-stage research and MVP runtime. The Python interpreter and its tests are the current executable baseline. Several directories contain prototypes or experiments; their presence does not imply production-ready compiler, agent, blockchain, or multi-language support.
 
-Q-lang is a semantic computing language designed to understand, define, analyze, learn, coordinate, and execute any digital or conceptual object. Unlike traditional programming languages that focus exclusively on compiling logical operations into specific machine code instructions, Q focuses entirely on mapping and orchestrating
-**meaning**.
-In the Q ecosystem, **everything is treated as an Object**—whether it is a raw file, a legacy script, an AI model, a communication protocol, a decentralized blockchain ledger, or a human-defined conceptual framework.
+## Design goals
 
+- **Object-oriented semantic representation:** describe entities together with their context, properties, relationships, and capabilities.
+- **Semantic processing:** explore a pipeline of detection, analysis, inference, classification, registration, and learning.
+- **Explicit coordination:** represent delegated work through a route/instruct/verify/result protocol.
+- **Execution boundaries:** separate semantic interpretation from actions that may affect external systems.
+- **Verification-gated learning:** treat observed evidence and verified outcomes as prerequisites for trusted knowledge.
 
-## 🚀 Core Principles1. 
+These are design goals. The current implementation only partially realizes them; see [Implementation status](Docs/IMPLEMENTATION_STATUS.md).
 
-**Everything is an Object.** 
-Any piece of data, code, or model can be wrapped.2.
-**Everything has Meaning.** 
-Entities are mapped by their logical context and capabilities.3. **Everything can be Analyzed & Defined.** 
-Unknown elements are broken down automatically.4. 
-**Everything can be Learned.**
-Once ingested, objects are indexed for future programs.5. 
-**Everything can be Coordinated & Executed.** 
-Objects seamlessly interact across technical stacks.
+## Semantic directive notation
 
-## 🛠️ Repository Architecture
-The project codebase relies primarily on **Ruby** and **Python**, split across specialized directory layers designed to parse and evaluate semantic syntax:
+The directive parser currently recognizes these operator families:
+
+| Form | Current parser meaning |
+| --- | --- |
+| `^↑D` | Deep semantic processing in the upward direction |
+| `^↓D` | Semantic processing in the downward direction |
+| `^→D` | Semantic processing in the forward direction |
+| `^←D` | Semantic processing in the reverse direction |
+| `^D` suffix | Marks a directive as an execution request |
+
+Examples:
+
+```text
+^↑D Explain neural-symbolic compilation
+^↑D create a Q-lang project ^D
+```
+
+The first form requests semantic interpretation. The second requests the runtime's current execution path. At this stage, execution is a **simulation**, not a general-purpose operating-system or external-service executor. A successful simulated response must not be interpreted as proof that a real-world action occurred.
+
+## Architecture map
+
+| Area | Responsibility in the current codebase |
+| --- | --- |
+| `Parser/` | Q source lexer/parser and syntax errors |
+| `Core/` | Core engine, directive parsing, semantic IR and processing |
+| `Runtime/` | Python tree-walking interpreter and directive entry point |
+| `Protocol/` | ROUTE → INSTRUCT → VERIFY → RESULT protocol |
+| `Agent/` | Agent bridge and experimental agent integration |
+| `Engine/` | Additional semantic-runtime experiment; not yet consolidated with `Runtime/` |
+| `Learning_loop/` | Learning experiments; not yet a trusted persistent learning system |
+| `Tests/` | Python unittest suite for parser, runtime, directives and protocol |
+| `src/`, `main.rs`, language-specific folders | Experimental language/compiler work; not the active Python runtime |
+
+There are currently overlapping semantic-runtime implementations. The ordinary Q interpreter is in `Runtime/q_runtime.py`; semantic directive orchestration is also implemented there. The separate `Engine/` runtime and the protocol/agent abstractions are not yet a single unified execution path.
+
+## Requirements
+
+- Python 3.10 or newer
+- Git (to clone the repository)
+
+The current Python test suite uses the standard library `unittest`; no third-party Python test dependency is required.
+
+## Quick start
+
+Clone and enter the repository:
+
 ```bash
-├── Q_cli/           # Command Line Interface execution binaries
-├── Core/            # Core processing engine of the language environment
-├── Engine/          # Runtime execution state manager
-├── Parser/          # Abstract syntax tree (AST) interpreter for .q / .pq files
-├── Runtime/         # Live context execution machine
-├── Learning_loop/   # Continuous reinforcement layer for discovered objects
-├── Agent/           # Built-in autonomous AI worker integrations
-├── Blockchain/      # Decentralized cryptographic ledger connectors
-├── Extensions/      # Web hooks, plugins, and third-party bindings
-└── example/         # Implementation templates and boilerplate configurations
-```
-## 🔄 Universal Form Syntax
-All evaluations inside Q-lang flow through a linear operation chain known as the **Universal Form**:
-```q
-understand * define * analyze * learn * coordinate * run
-```
-*Where `*` acts as a placeholder representing any known or unknown system object.*
-
-### A Complete Pipeline Example 
-(`Program.pq`)
-```q
-// Define a local service object
-define Service::"CustomerDB" {
-    type: "PostgreSQL",
-    endpoint: "localhost:5432"
-}
-
-// Define an AI model that interacts with tools via the Model Context Protocol (MCP)
-define Agent::"Analyst" {
-    model: "Claude-3.5-Sonnet",
-    protocol: "McpRegistry"
-}
-
-// Chain execution using the Universal Form
-understand CustomerDB * coordinate Analyst * run Analyst
-```
----
-## 🧬 Unknown Object Lifecycle
-When the execution runtime encounters an unmapped file type or data stream, it safely loops it through an automated discovery cycle instead of throwing an exception:
-
-
-[ Volatile Input ] ──> detect ──> analyze ──> infer ──> classify ──> register ──> learn ──> [ Active Ecosystem ]
-
-
-1. **`detect unknown`**: Flags the black-box item inside the physical workspace.
-2. **`analyze unknown`**: Performs parsing checks on internal structural patterns.
-3. **`infer unknown`**: Contextually determines the operational intent and constraints.
-4. **`classify unknown`**: Assigns a definitive system type (e.g., protocol, script, dataset).
-5. **`register unknown`**: Locks a recognizable instance signature into the workspace environment.
-6. **`learn unknown`**: Incorporates features into the active database, making it fully available to all future program chains.
-
-```q
-// Discovery scripting example
-detect unknown::"etc/analytics.rbx"
-analyze unknown
-classify unknown as "DataTransformer"
-learn DataTransformer
-```
-
----
-
-## 💻 Technical Stack
-
-The code distribution consists of the following primary development languages and tool frameworks:
-* **Ruby (56.7%)**: Drives the main compiler logic, setup tasks, and core automation frameworks.
-* **Python (18.2%)**: Drives AI agent tools, data science integrations, and internal model handlers.
-* **Shell (10.2%)**: Local environment setup tools and automated terminal processes.
-* **q / OverPy / Power Query (14.9%)**: Native evaluation syntax, analytical data querying parsers, and custom typing files.
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please review our core guidelines before opening a pull request:
-1. Ensure new operational bindings extend the native components in `/Core`.
-2. Provide an abstract mapping template in the `/example` directory for any newly supported services.
-3. All syntax adjustments must successfully map through the internal validation check in `/Parser`.
-
-## 📄 License
-
-This project is open-source and maintained under the [Aura Ecosystem](https://github.com)
-
- "Aura Ecosystem Organization Hub") organizational guidelines.
-
-
-
+git clone https://github.com/auraecosystem/Q-lang.git
 cd Q-lang
-gem install bundler && bundle install
-pip install -r requirements.txt
+python -m Runtime.q_runtime path/to/program.q
 ```
 
-### 2. Verification
+Run a Q source file through the installed-style CLI module:
+
 ```bash
-./Q_cli/bin/q-lang check example/Program.pq
+python q_cli.py path/to/program.q
 ```
 
----
+The CLI prints each non-null result returned by the runtime. The `q` console entry point is declared in `pyproject.toml`; install the project in editable mode if you want to use that entry point:
 
-## 🔄 Universal Form & MCP Integration
-
-Objects are managed via the **Universal Form** (`understand * define * analyze * learn * coordinate * run`).
-
-The `Agent/` directory uses the **Model Context Protocol (MCP)** to map external tools/data for AI agents.
-
-```q
-// Define and coordinate a secure agent
-define Agent::"SecurityGuard" { model: "Claude-3.5-Sonnet", protocol: "McpRegistry" }
-coordinate Agent::"SecurityGuard" { target: SystemScanner }
-run SecurityGuard
+```bash
+python -m pip install -e .
+q path/to/program.q
 ```
 
----
+## Run tests
 
-## 🧬 Unknown Object Lifecycle
-When encountering unknown objects, the system automatically runs a discovery cycle: `detect` -> `analyze` -> `infer` -> `classify` -> `register` -> `learn`.
+From the repository root:
 
----
+```bash
+python -m compileall -q Core Parser Runtime Protocol Agent q_cli.py
+python -m unittest discover -s Tests -p "test_*.py" -v
+```
 
-## 💻 Technical Stack
-*   **Ruby (56.7%)**: Core Engine & CLI.
-*   **Python (18.2%)**: Learning loop & Agents.
-*   **Shell (10.2%)**: Bootstrapping.
-*   **Q/PQ (14.9%)**: Syntax.
+The same checks are run by `bash.sh` and the Python GitHub Actions workflow.
 
----
+## Runtime safety and current limitations
 
-## 📄 License
-Maintained under [Aura Ecosystem](https://github.com) guidelines.
+- Semantic directive execution currently returns a simulated observation. It does not establish that an external action was performed.
+- Current verification is minimal and must not be used as a security guarantee or as proof of external postconditions.
+- The semantic inference implementation is heuristic and should not be treated as a calibrated model or confidence score.
+- Agent/MCP-related code is experimental; the repository does not yet provide a production-ready, permissioned MCP tool execution environment.
+- Persistent learning, rollback, authorization policy, capability isolation, and evidence-backed postcondition checks require further implementation.
+- The Python runtime, the additional Engine runtime, and experimental Rust/other-language artifacts have not yet been consolidated into one compiler/runtime contract.
 
+Do not connect this runtime to production systems or grant it sensitive credentials until authorization, sandboxing, audit logging, and independent verification have been implemented and reviewed.
+
+## Development direction
+
+The recommended sequence is:
+
+1. Establish the Python implementation as the reference runtime and keep CI green.
+2. Define the language grammar, AST, directive semantics, and Semantic IR contract.
+3. Consolidate semantic execution so there is one authoritative coordinator.
+4. Route agent delegation through the protocol rather than bypassing it.
+5. Replace simulated execution with explicit capability adapters, authorization, and sandbox boundaries.
+6. Verify real postconditions using independent evidence; only then promote knowledge to trusted state.
+7. Add persistence, rollback, compatibility tests, packaging, and release documentation.
+8. Reintroduce other language implementations behind conformance tests once the language contract is stable.
+
+## Contributing
+
+1. Preserve existing parser and runtime behavior unless a change is covered by tests.
+2. Add or update tests for every behavior change.
+3. Keep simulated behavior clearly labeled; never report a simulated action as a real execution.
+4. Document experimental components and known limitations.
+5. Run the complete test command before submitting a pull request.
+
+## License
+
+See the repository's license file for the applicable terms.
