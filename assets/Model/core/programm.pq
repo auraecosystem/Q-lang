@@ -1,12 +1,12 @@
 // Define a local service object
 define Service::"CustomerDB" {
     type: "PostgreSQL",
-    endpoint: "localhost:8080"
+    endpoint: "localhost:1111"
 }
 
 // Define an AI model that interacts with tools via the Model Context Protocol (MCP)
 define Agent::"Analyst" {
-    model: "lmlm",
+    model: "lmlmodel",
     protocol: "McpRegistry"
 }
 
