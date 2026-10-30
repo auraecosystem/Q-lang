@@ -18,8 +18,11 @@ class QReturn(Exception):
 
 
 class QRuntime:
-    """Tree-walking VM for Q-lang with semantic orchestration."""
-    def __init__(self, agent=None):
+    """Tree-walking VM for Q-lang with an explicitly gated directive executor."""
+
+    def __init__(self, agent=None, executor=None):
+        if executor is not None and not callable(executor):
+            raise TypeError("executor must be callable")
         self.parser = QParser()
         self.directive_parser = DirectiveParser()
         self.engine = QEngine()
@@ -28,6 +31,7 @@ class QRuntime:
         self.functions = {}
         self.max_loop_iterations = 100000
         self.agent_bridge = agent or (QAgentBridge() if QAgentBridge else None)
+        self.executor = executor
         instructor = self._agent_instruct if self.agent_bridge else None
         self.protocol = QProtocol(instructor=instructor)
         self.state = {}
@@ -51,12 +55,27 @@ class QRuntime:
         instruction = self._instruct(ir, route)
         if not directive.execution:
             return {"phase": "SEMANTIC", "ir": ir.to_dict(), "route": route}
+
         observation = self._execute_instruction(instruction)
         verification = self._verify_instruction(instruction, observation)
-        result = {"status": "success" if verification["verified"] else "failure",
-                  "intent": ir.intent, "route": route, "instruction": instruction,
-                  "observation": observation, "verification": verification}
+        if verification["verified"]:
+            status = "verified"
+        elif observation.get("mode") == "simulation":
+            status = "simulated"
+        else:
+            status = "unverified"
+
+        result = {
+            "status": status,
+            "intent": ir.intent,
+            "route": route,
+            "instruction": instruction,
+            "observation": observation,
+            "verification": verification,
+        }
         self.state["last_result"] = result
+        # Only adapter results carrying an explicit verification flag and
+        # non-empty evidence can enter the trusted knowledge collection.
         if verification["verified"]:
             self.semantic.knowledge.append({"result": result, "status": "verified"})
         return result
@@ -70,13 +89,39 @@ class QRuntime:
                 "subject": ir.subject, "operations": list(ir.operations)}
 
     def _execute_instruction(self, instruction):
-        return {"executed": True, "capability": instruction["capability"],
-                "intent": instruction["intent"], "subject": instruction["subject"]}
+        if self.executor is None:
+            # Safe default: describe the proposed action without performing it.
+            return {
+                "mode": "simulation",
+                "executed": False,
+                "capability": instruction["capability"],
+                "intent": instruction["intent"],
+                "subject": instruction["subject"],
+                "reason": "No execution adapter is configured.",
+            }
+        observation = self.executor(dict(instruction))
+        if not isinstance(observation, dict):
+            raise RuntimeError("execution adapter must return a dictionary observation")
+        return observation
 
     def _verify_instruction(self, instruction, observation):
-        return {"verified": observation is not None,
-                "evidence": observation,
-                "postconditions": ["execution returned an observation"]}
+        evidence = observation.get("evidence") if isinstance(observation, dict) else None
+        verified = (
+            isinstance(observation, dict)
+            and observation.get("verified") is True
+            and evidence is not None
+            and evidence != ""
+            and evidence != []
+            and evidence != {}
+        )
+        return {
+            "verified": verified,
+            "evidence": evidence,
+            "postconditions": [
+                "adapter explicitly marked the result verified",
+                "adapter supplied non-empty evidence",
+            ],
+        }
 
     def _eval(self, node):
         kind = node[0]
