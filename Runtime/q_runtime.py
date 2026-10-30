@@ -7,12 +7,6 @@ from Core.q_directive_parser import DirectiveParser
 from Core.directives import DeepSemanticProcessor
 from Protocol.q_protocol import QProtocol, ProtocolError
 
-try:
-    from Agent.q_bridge import QAgentBridge
-except ImportError:
-    QAgentBridge = None
-
-
 class QReturn(Exception):
     def __init__(self, value): self.value = value
 
@@ -30,9 +24,11 @@ class QRuntime:
         self.env = {}
         self.functions = {}
         self.max_loop_iterations = 100000
-        self.agent_bridge = agent or (QAgentBridge() if QAgentBridge else None)
+        # Agent adapters are explicit dependencies; do not initialize external
+        # agent clients or require credentials during ordinary local execution.
+        self.agent_bridge = agent
         self.executor = executor
-        instructor = self._agent_instruct if self.agent_bridge else None
+        instructor = self._agent_instruct if agent is not None else None
         self.protocol = QProtocol(instructor=instructor)
         self.state = {}
 
