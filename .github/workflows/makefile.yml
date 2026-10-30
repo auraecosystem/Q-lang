@@ -1,27 +1,24 @@
-name: Makefile CI
+name: Experimental Makefile Build (manual)
 
+# This repository does not currently expose the configure/make build contract
+# assumed by this historical workflow. Keep it manual until that toolchain is
+# added and verified.
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   build:
-
-    runs-on: self-hosted
-
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6
-
-    - name: configure
-      run: ./configure
-
-    - name: Install dependencies
-      run: make
-
-    - name: Run check
-      run: make check
-
-    - name: Run distcheck
-      run: make distcheck
+      - uses: actions/checkout@v4
+      - name: Check for configure script
+        run: |
+          if [ ! -x ./configure ]; then
+            echo "No executable ./configure script is present; Makefile build is not configured."
+            exit 1
+          fi
+      - name: Configure and build
+        run: |
+          ./configure
+          make
+          make check

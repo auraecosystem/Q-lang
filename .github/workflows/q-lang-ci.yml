@@ -1,8 +1,9 @@
-name: Q-lang CI
+name: Legacy Q-lang CI (manual)
 
+# The canonical automated test job is ci.yml. Keep this older workflow
+# available for manual diagnostics without running a duplicate CI pipeline.
 on:
-  push:
-  pull_request:
+  workflow_dispatch:
 
 jobs:
   test:
@@ -11,10 +12,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
-      - name: Compile Python sources
-        run: python -m compileall Parser Core Runtime q_cli.py
+          python-version: "3.11"
+      - name: Compile active Python sources
+        run: python -m compileall -q Parser Core Runtime Protocol Agent q_cli.py
       - name: Run Q-lang tests
-        run: python -m unittest discover -s Tests -v
-      - name: Execute example
-        run: python q_cli.py examples/hello.q
+        run: python -m unittest discover -s Tests -p "test_*.py" -v
+      - name: Execute sample program
+        run: python q_cli.py examples/Hello.q
