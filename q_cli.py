@@ -5,6 +5,8 @@ import argparse
 import sys
 from pathlib import Path
 
+from Parser.q_parser import QSyntaxError
+from Protocol.q_protocol import ProtocolError
 from Runtime.q_runtime import run_file
 
 
@@ -25,7 +27,7 @@ def main(argv=None):
 
     try:
         results = run_file(args.file)
-    except (SyntaxError, RuntimeError, ValueError) as exc:
+    except (QSyntaxError, RuntimeError, ValueError, ProtocolError) as exc:
         print(f"Q-lang error: {exc}", file=sys.stderr)
         return 1
 
