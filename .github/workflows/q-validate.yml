@@ -1,0 +1,25 @@
+name: Q-Lang Semantic Validator
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v7
+
+      - name: Setup Ruby Runtime
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundle-cache: true
+
+      - name: Validate Project Syntax Maps
+        run: |
+          ./Q_cli/bin/q-lang check example/Program.pq
+          ./Q_cli/bin/q-lang check __init__.q
